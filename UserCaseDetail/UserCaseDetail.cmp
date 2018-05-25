@@ -1,0 +1,103 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" controller="UserCaseController">
+
+	<aura:attribute name="allCases" type="Object[]" access="public"/>
+	<aura:attribute name="objInfo" type="case" default="{sobjectType : 'Case'}"/>
+	<aura:attribute name="caseType" type="String[]" access="public"/>
+	<aura:attribute name="spinnerLoad" type="Boolean" default=""/>
+
+	<aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+	<aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+	<aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+
+	<aura:registerEvent name="hideCaseModal" type="c:UserCaseEvt"/>
+
+	<section role="dialog" style="height: 110%; width: 90%;" class="slds-modal slds-fade-in-open slds-align--absolute-center">
+		<div class="slds-modal__container">
+			<div class="slds-page-header" role="banner">
+				<div class="slds-grid">
+					<div class="slds-col slds-large-size--10-of-12 slds-grid slds-media__figure">
+						<div>
+							<lightning:icon iconName="action:new_lead" size="small" alternativeText=""/>
+						</div>
+						<div>
+							<h1 class="slds-page-header__title slds-truncate slds-p-around_x-small" title="Politics">My Cases</h1>
+						</div>
+					</div>
+					<div class="slds-col slds-large-size--2-of-12 slds-p-around_small">
+							<aura:if isTrue="{!v.spinnerLoad}">
+								<div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+									<span class="slds-assistive-text">Loading</span>
+									<div class="slds-spinner__dot-a"></div>
+									<div class="slds-spinner__dot-b"></div>
+								</div>
+							</aura:if>
+						<ui:inputSelect aura:id="CaseList" class="slds-select " change="{!c.changeCaseObject}">
+							<aura:iteration items="{!v.caseType}" var="type">
+								<ui:inputSelectOption text="{!type}" label="{!type}"/>
+							</aura:iteration>
+						</ui:inputSelect>
+					</div>
+				</div>
+			</div>
+			<div class="slds-modal__content slds-p-around_medium slds-p-around_medium">
+				<table style="table-layout:fixed; border-style: solid; border-color: gainsboro;  border-width:1px;" class="slds-table slds-table--bordered slds-max-large-table--stacked-horizontal" role="grid">
+					<thead>
+						<tr class="slds-text-title--caps">
+							<th scope="col" class="slds-is-sortable slds-is-resizable slds-text-title_caps" style="width: 10%; background-color: gainsboro;">
+								<span class="slds-truncate slds-p-left_x-small" style="font-weight: bold;" title="Raised On">Raised On</span>
+							</th>
+							<th class="slds-is-resizable slds-text-title_caps slds-is-sorted slds-is-sorted_asc" scope="col" aria-sort="ascending" style="width: 10%; background-color: gainsboro;">
+								<span class="slds-truncate" style="font-weight: bold;" title="Area">Area</span>
+							</th>
+							<th class="slds-is-resizable slds-text-title_caps" scope="col" style="width: 20%; background-color: gainsboro;">
+								<span class="slds-truncate " style="font-weight: bold;" title="Record Name">Record Name</span>
+							</th>
+							<th class="slds-is-resizable slds-text-title_caps" scope="col" style="width: 30%; background-color: gainsboro;">
+								<span class="slds-truncate " style="font-weight: bold;" title="Case Subject">Case Subject</span>
+							</th>
+							<th class="slds-is-resizable slds-text-title_caps" scope="col" style="width: 10%; background-color: gainsboro;">
+								<span class="slds-truncate " style="font-weight: bold;" title="Status">Status</span>
+							</th>
+							<th class="slds-is-resizable slds-text-title_caps" style="width: 20%; background-color: gainsboro; ">
+								<span class="slds-truncate" style="font-weight: bold; white-space: pre-wrap;">Last Comment</span>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<aura:iteration items="{!v.allCases}" var="res" indexVar="i">
+							<tr class="slds-hint-parent" id="{!'row'+i}">
+								<td scope="row" title="AssignedTo" id="{!'assignedTo'+i}" style="white-space: pre-wrap;">
+									{!res.createdDt}
+								</td>
+
+								<td scope="row" title="Area" id="{!'area'+i}" style="white-space: pre-wrap;">
+									{!res.caseDetails.Record_Type__c}
+								</td>
+
+								<td scope="row" title="RecordName" id="{!'recordName'+i}" style="white-space: pre-wrap;">
+									<ui:outputURL value="{!res.caseDetails.Link_to_Record__c}" target="_blank" label="{!res.caseDetails.Record_Name__c}"/>
+								</td>
+
+								<td scope="row" title="CaseSubject" id="{!'caseSubject'+i}" style="white-space: pre-wrap;">
+									{!res.caseDetails.Description}
+								</td>
+
+								<td scope="row" title="Status" id="{!'status'+i}" style="white-space: pre-wrap;">
+									{!res.caseDetails.Status}
+								</td>
+
+								<td scope="row" title="LastChatterComment" id="{!'lastChatterComment'+i}" style="white-space: pre-wrap;">
+									{!res.feedDetails.CommentBody}
+								</td>
+							</tr>
+						</aura:iteration>
+					</tbody>
+				</table>
+			</div>
+			<footer class="slds-modal__footer">
+				<button class="slds-button slds-button_neutral" onclick="{!c.closeCase}">Close</button>
+			</footer>
+		</div>
+	</section>
+	<div class="slds-backdrop slds-backdrop--open"></div>
+</aura:component>
