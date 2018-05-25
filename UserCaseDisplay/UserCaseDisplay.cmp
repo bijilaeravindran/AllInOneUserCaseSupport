@@ -1,0 +1,25 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global">
+
+<aura:handler name="hideCaseModal" event="c:UserCaseEvt" action="{!c.hideCaseDetail}" />
+
+	<!--Button to open the User Details popup -->
+	<div class="slds-page-header slds-align_absolute-center">
+		<div class="slds-media">
+			<div class="slds-media__figure">
+				<span class="slds-icon_container slds-icon-standard-opportunity" title="Description of icon when needed">
+					<lightning:icon iconName="action:new_lead" size="small" alternativeText=""/>
+				</span>
+			</div>
+			<div class="slds-media__body slds-p-bottom_xx-small">
+				<button class="slds-button slds-button_brand" onclick="{!c.openMyCases}">View My Cases</button>
+			</div>
+		</div>
+	</div>
+
+	<!--Component that shows the User Case details in a Modal Popup -->
+	<div role="dialog" aura:id="userCase" class="slds-modal slds-fade-in-open slds-modal--large slds-hide" style="height: 110%; max-height: 100%;">
+		<div aura:id="container" class="slds-modal__container slds-fade-in-open" style="height: 100%; width: 100%">
+				<c:UserCaseDetail />
+		</div>
+	</div>
+</aura:component>
